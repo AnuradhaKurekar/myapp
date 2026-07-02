@@ -1,42 +1,40 @@
 const { test, expect } = require('@playwright/test');
-const ForgotPasswordPage = require('../pages/ForgotPasswordPage');
+const { ForgotPasswordPage } = require('../pages/ForgotPasswordPage');
 
+test.beforeEach(async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+});
 
-test.describe('Forgot password flows', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.evaluate(() => localStorage.clear());
-  });
+test('shows validation error for empty email', async ({ page }) => {
+  const forgotPasswordPage = new ForgotPasswordPage(page);
+  await forgotPasswordPage.goto();
+  await forgotPasswordPage.submit();
 
-  test('shows validation errors for empty email', async ({ page }) => {
-    const forgotPasswordPage = new ForgotPasswordPage(page);
-    await forgotPasswordPage.goto();
-    await forgotPasswordPage.submit();
+  await expect(forgotPasswordPage.errorMessage).toHaveText('Email is required');
+});
 
-    await forgotPasswordPage.expectError('Email is required');
-  });
+test('shows validation error for invalid email format', async ({ page }) => {
+  const forgotPasswordPage = new ForgotPasswordPage(page);
+  await forgotPasswordPage.goto();
+  await forgotPasswordPage.requestReset('not-an-email');
 
-  test('shows validation error for invalid email format', async ({ page }) => {
-    const forgotPasswordPage = new ForgotPasswordPage(page);
-    await forgotPasswordPage.goto();
-    await forgotPasswordPage.requestReset('invalid-email');
+  await expect(forgotPasswordPage.errorMessage).toHaveText('Please enter a valid email');
+});
 
-    await forgotPasswordPage.expectError('Please enter a valid email');
-  });
+test('shows success message for a valid reset request', async ({ page }) => {
+  const forgotPasswordPage = new ForgotPasswordPage(page);
+  await forgotPasswordPage.goto();
+  await forgotPasswordPage.requestReset('ada@example.com');
 
-  test('shows a success message for a valid email', async ({ page }) => {
-    const forgotPasswordPage = new ForgotPasswordPage(page);
-    await forgotPasswordPage.goto();
-    await forgotPasswordPage.requestReset('user@example.com');
+  await expect(forgotPasswordPage.successMessage).toContainText('a reset link has been sent');
+});
 
-    await forgotPasswordPage.expectSuccessMessage('user@example.com');
-  });
+test('returns to login from forgot password page', async ({ page }) => {
+  const forgotPasswordPage = new ForgotPasswordPage(page);
+  await forgotPasswordPage.goto();
+  await forgotPasswordPage.goBackToLogin();
 
-  test('returns to login from forgot password', async ({ page }) => {
-    const forgotPasswordPage = new ForgotPasswordPage(page);
-    await forgotPasswordPage.goto();
-    await forgotPasswordPage.goBackToLogin();
-
-    await expect(page).toHaveURL(/\/login$/);
-  });
+  await expect(page).toHaveURL(/\/login$/);
 });

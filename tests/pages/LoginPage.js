@@ -1,26 +1,25 @@
-const { expect } = require('@playwright/test');
-
 class LoginPage {
   constructor(page) {
     this.page = page;
     this.url = '/login';
+    this.emailInput = page.getByTestId('login-email-input');
+    this.passwordInput = page.getByTestId('login-password-input');
+    this.submitButton = page.getByTestId('login-button');
+    this.errorMessage = page.getByTestId('login-error');
+    this.forgotPasswordLink = page.getByTestId('forgot-password-link');
   }
 
   async goto() {
-    await this.page.goto(new URL(this.url, 'http://localhost:3000').toString());
+    await this.page.goto(this.url);
   }
 
-  async fillCredentials({ email, password }) {
-    if (email !== undefined) {
-      await this.page.getByTestId('login-email-input').fill(email);
-    }
-    if (password !== undefined) {
-      await this.page.getByTestId('login-password-input').fill(password);
-    }
+  async fillCredentials({ email = '', password = '' }) {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
   }
 
   async submit() {
-    await this.page.getByTestId('login-button').click();
+    await this.submitButton.click();
   }
 
   async login(credentials) {
@@ -29,11 +28,7 @@ class LoginPage {
   }
 
   async openForgotPassword() {
-    await this.page.getByTestId('forgot-password-link').click();
-  }
-
-  async expectError(message) {
-    await expect(this.page.getByTestId('login-error')).toHaveText(message);
+    await this.forgotPasswordLink.click();
   }
 }
 

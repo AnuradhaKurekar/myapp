@@ -1,57 +1,36 @@
-const { expect } = require('@playwright/test');
-
 class SignupPage {
   constructor(page) {
     this.page = page;
     this.url = '/signup';
+    this.firstNameInput = page.getByTestId('firstname-input');
+    this.lastNameInput = page.getByTestId('lastname-input');
+    this.emailInput = page.getByTestId('email-input');
+    this.passwordInput = page.getByTestId('password-input');
+    this.submitButton = page.getByTestId('submit-button');
+    this.firstNameError = page.getByTestId('firstname-error');
+    this.lastNameError = page.getByTestId('lastname-error');
+    this.emailError = page.getByTestId('email-error');
+    this.passwordError = page.getByTestId('password-error');
   }
 
   async goto() {
-    await this.page.goto(new URL(this.url, 'http://localhost:3000').toString());
+    await this.page.goto(this.url);
   }
 
-  async fillForm({ firstName, lastName, email, password }) {
-    if (firstName !== undefined) {
-      await this.page.getByTestId('firstname-input').fill(firstName);
-    }
-    if (lastName !== undefined) {
-      await this.page.getByTestId('lastname-input').fill(lastName);
-    }
-    if (email !== undefined) {
-      await this.page.getByTestId('email-input').fill(email);
-    }
-    if (password !== undefined) {
-      await this.page.getByTestId('password-input').fill(password);
-    }
+  async fillForm({ firstName = '', lastName = '', email = '', password = '' }) {
+    await this.firstNameInput.fill(firstName);
+    await this.lastNameInput.fill(lastName);
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
   }
 
   async submit() {
-    await this.page.getByTestId('submit-button').click();
+    await this.submitButton.click();
   }
 
-  async signup(user) {
+  async signUp(user) {
     await this.fillForm(user);
     await this.submit();
-  }
-
-  async getErrorText(field) {
-    return this.page.getByTestId(`${field}-error`).textContent();
-  }
-
-  async expectFirstNameError(message) {
-    await expect(this.page.getByTestId('firstname-error')).toHaveText(message);
-  }
-
-  async expectLastNameError(message) {
-    await expect(this.page.getByTestId('lastname-error')).toHaveText(message);
-  }
-
-  async expectEmailError(message) {
-    await expect(this.page.getByTestId('email-error')).toHaveText(message);
-  }
-
-  async expectPasswordError(message) {
-    await expect(this.page.getByTestId('password-error')).toHaveText(message);
   }
 }
 

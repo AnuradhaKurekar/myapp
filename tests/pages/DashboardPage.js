@@ -1,21 +1,17 @@
-const { expect } = require('@playwright/test');
-
 class DashboardPage {
   constructor(page) {
     this.page = page;
     this.url = '/dashboard';
+    this.welcomeMessage = page.getByTestId('dashboard-welcome');
+    this.logoutButton = page.getByTestId('logout-button');
   }
 
   async goto() {
-    await this.page.goto(new URL(this.url, 'http://localhost:3000').toString());
+    await this.page.goto(this.url);
   }
 
   async logout() {
-    await this.page.getByTestId('logout-button').click();
-  }
-
-  async expectWelcomeMessage(name) {
-    await expect(this.page.getByTestId('dashboard-welcome')).toContainText(name);
+    await this.logoutButton.click();
   }
 }
 
