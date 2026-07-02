@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const { ForgotPasswordPage } = require('../pages/ForgotPasswordPage');
+const ForgotPasswordPage = require('../pages/ForgotPasswordPage');
 
 
 test.describe('Forgot password flows', () => {

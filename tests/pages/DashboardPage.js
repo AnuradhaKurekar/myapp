@@ -1,3 +1,5 @@
+const { expect } = require('@playwright/test');
+
 class DashboardPage {
   constructor(page) {
     this.page = page;
@@ -5,7 +7,7 @@ class DashboardPage {
   }
 
   async goto() {
-    await this.page.goto(this.url);
+    await this.page.goto(new URL(this.url, 'http://localhost:3000').toString());
   }
 
   async logout() {
@@ -13,7 +15,7 @@ class DashboardPage {
   }
 
   async expectWelcomeMessage(name) {
-    await this.page.getByTestId('dashboard-welcome').toContainText(name);
+    await expect(this.page.getByTestId('dashboard-welcome')).toContainText(name);
   }
 }
 

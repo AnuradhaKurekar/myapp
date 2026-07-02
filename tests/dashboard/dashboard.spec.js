@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
-const { SignupPage } = require('../pages/SignupPage');
-const { LoginPage } = require('../pages/LoginPage');
-const { DashboardPage } = require('../pages/DashboardPage');
+const SignupPage = require('../pages/SignupPage');
+const LoginPage = require('../pages/LoginPage');
+const DashboardPage = require('../pages/DashboardPage');
 
 const uniqueEmail = () => `dashboard${Date.now()}@example.com`;
 

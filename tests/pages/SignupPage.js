@@ -1,3 +1,5 @@
+const { expect } = require('@playwright/test');
+
 class SignupPage {
   constructor(page) {
     this.page = page;
@@ -5,7 +7,7 @@ class SignupPage {
   }
 
   async goto() {
-    await this.page.goto(this.url);
+    await this.page.goto(new URL(this.url, 'http://localhost:3000').toString());
   }
 
   async fillForm({ firstName, lastName, email, password }) {
@@ -37,19 +39,19 @@ class SignupPage {
   }
 
   async expectFirstNameError(message) {
-    await this.page.getByTestId('firstname-error').toHaveText(message);
+    await expect(this.page.getByTestId('firstname-error')).toHaveText(message);
   }
 
   async expectLastNameError(message) {
-    await this.page.getByTestId('lastname-error').toHaveText(message);
+    await expect(this.page.getByTestId('lastname-error')).toHaveText(message);
   }
 
   async expectEmailError(message) {
-    await this.page.getByTestId('email-error').toHaveText(message);
+    await expect(this.page.getByTestId('email-error')).toHaveText(message);
   }
 
   async expectPasswordError(message) {
-    await this.page.getByTestId('password-error').toHaveText(message);
+    await expect(this.page.getByTestId('password-error')).toHaveText(message);
   }
 }
 

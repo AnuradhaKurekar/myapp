@@ -1,3 +1,5 @@
+const { expect } = require('@playwright/test');
+
 class LoginPage {
   constructor(page) {
     this.page = page;
@@ -5,7 +7,7 @@ class LoginPage {
   }
 
   async goto() {
-    await this.page.goto(this.url);
+    await this.page.goto(new URL(this.url, 'http://localhost:3000').toString());
   }
 
   async fillCredentials({ email, password }) {
@@ -31,7 +33,7 @@ class LoginPage {
   }
 
   async expectError(message) {
-    await this.page.getByTestId('login-error').toHaveText(message);
+    await expect(this.page.getByTestId('login-error')).toHaveText(message);
   }
 }
 

@@ -1,3 +1,5 @@
+const { expect } = require('@playwright/test');
+
 class ForgotPasswordPage {
   constructor(page) {
     this.page = page;
@@ -5,7 +7,7 @@ class ForgotPasswordPage {
   }
 
   async goto() {
-    await this.page.goto(this.url);
+    await this.page.goto(new URL(this.url, 'http://localhost:3000').toString());
   }
 
   async enterEmail(email) {
@@ -22,11 +24,11 @@ class ForgotPasswordPage {
   }
 
   async expectError(message) {
-    await this.page.getByTestId('forgot-email-error').toHaveText(message);
+    await expect(this.page.getByTestId('forgot-email-error')).toHaveText(message);
   }
 
   async expectSuccessMessage(email) {
-    await this.page.getByTestId('reset-success-message').toContainText(email);
+    await expect(this.page.getByTestId('reset-success-message')).toContainText(email);
   }
 
   async goBackToLogin() {
